@@ -18,23 +18,11 @@ class CreateAnimalRequest extends APIRequest
     public function rules()
     {
         if (!$this->get('game_id')) {
-            throw new HttpResponseException(response()->json([
-                'game_id' => [
-                    'The game_id field is required.'
-                ]
-            ], 422));
+            $this->returnThrow('The game_id field is required.');
         } elseif (!is_numeric($this->get('game_id'))) {
-            throw new HttpResponseException(response()->json([
-                'game_id' => [
-                    'The game id must be an integer.'
-                ]
-            ], 422));
+            $this->returnThrow('The game id must be an integer.');
         } elseif (!$game = Game::find($this->get('game_id'))) {
-            throw new HttpResponseException(response()->json([
-                'game_id' => [
-                    'The selected game id is invalid.'
-                ]
-            ], 422));
+            $this->returnThrow('The selected game id is invalid.');
         }
         return [
             'game_id' => 'required|integer|exists:games,id',
@@ -44,4 +32,13 @@ class CreateAnimalRequest extends APIRequest
         ];
     }
 
+
+    public function returnThrow($message)
+    {
+        throw new HttpResponseException(response()->json([
+            'game_id' => [
+                $message
+            ]
+        ], 422));
+    }
 }
