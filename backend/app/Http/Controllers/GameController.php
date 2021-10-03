@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreateGameRequest;
+use App\Events\NextStepGameEvent;
+use App\Http\Requests\Game\CreateGameRequest;
+use App\Http\Requests\Game\ShowGameByIdRequest;
 use App\Models\Animal;
 use App\Models\Game;
-use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class GameController extends Controller
 {
@@ -17,13 +20,12 @@ class GameController extends Controller
      */
     public function index()
     {
-
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param \App\Http\Requests\CreateGameRequest $request
+     * @param \App\Http\Requests\Game\CreateGameRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function store(CreateGameRequest $request)
@@ -34,13 +36,8 @@ class GameController extends Controller
         ]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function show($id)
+
+    public function show($id, ShowGameByIdRequest $request): \Illuminate\Http\JsonResponse
     {
         $game['field'] = Game::find($id);
         $game['hare'] = Animal::where('game_id', $id)->where('type', 'hare')->get();
@@ -49,6 +46,17 @@ class GameController extends Controller
             'data' => $game,
             'message' => 'Received.'
         ]);
+    }
+
+    /**
+     * Display the specified resource.
+     * @param \App\Http\Requests\Game\ShowGameByIdRequest $request
+     * @param int $id
+     */
+    public function nextStep($id, ShowGameByIdRequest $request)
+    {
+        Animal::checkAnimalsInGame($id);
+        event(new NextStepGameEvent(Game::find($id)));
     }
 
     /**

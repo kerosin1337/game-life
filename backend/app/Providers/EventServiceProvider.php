@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Events\CreateMoreAnimalEvent;
+use App\Events\NextStepGameEvent;
 use App\Listeners\CreateMoreAnimalListener;
+use App\Listeners\NextStepGameListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -30,12 +32,12 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         Event::listen(
-            CreateMoreAnimalEvent::class,
-            [CreateMoreAnimalListener::class, 'handle']
+            NextStepGameEvent::class,
+            [NextStepGameListener::class, 'handle']
         );
 
-        Event::listen(function (CreateMoreAnimalEvent $event) {
-            //
+        Event::listen(function (NextStepGameEvent $event) {
+
         });
     }
 }

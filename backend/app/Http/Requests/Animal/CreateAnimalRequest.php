@@ -1,23 +1,14 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Animal;
 
+use App\Http\Requests\APIRequest;
 use App\Models\Game;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class CreateAnimalRequest extends FormRequest
+
+class CreateAnimalRequest extends APIRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return true;
-    }
 
     /**
      * Get the validation rules that apply to the request.
@@ -29,11 +20,22 @@ class CreateAnimalRequest extends FormRequest
         if (!$this->get('game_id')) {
             throw new HttpResponseException(response()->json([
                 'game_id' => [
-                    'The game_id field is required'
+                    'The game_id field is required.'
+                ]
+            ], 422));
+        } elseif (!is_numeric($this->get('game_id'))) {
+            throw new HttpResponseException(response()->json([
+                'game_id' => [
+                    'The game id must be an integer.'
+                ]
+            ], 422));
+        } elseif (!$game = Game::find($this->get('game_id'))) {
+            throw new HttpResponseException(response()->json([
+                'game_id' => [
+                    'The selected game id is invalid.'
                 ]
             ], 422));
         }
-        $game = Game::find($this->get('game_id'));
         return [
             'game_id' => 'required|integer|exists:games,id',
             'type' => 'required|string|in:hare,wolf',
@@ -42,8 +44,4 @@ class CreateAnimalRequest extends FormRequest
         ];
     }
 
-    protected function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json($validator->errors(), 422));
-    }
 }

@@ -17,12 +17,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('game')->group(function () {
     Route::get('/', [GameController::class, 'index']);
+    Route::get('/{id}', [GameController::class, 'show']);
+    Route::get('/{id}/next', [GameController::class, 'nextStep']);
     Route::post('/create', [GameController::class, 'store']);
-    Route::get('/{id]', [GameController::class, 'show']);
 });
 
 Route::prefix('animal')->group(function () {
     Route::get('/', [AnimalController::class, 'index']);
     Route::post('/create', [AnimalController::class, 'create']);
-    Route::post('/create_more', [AnimalController::class, 'create_more']);
+    Route::post('/create_more', [AnimalController::class, 'createMore']);
 });
