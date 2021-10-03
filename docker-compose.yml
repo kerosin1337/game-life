@@ -1,0 +1,22 @@
+version: '3.7'
+
+services:
+  database:
+    image: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=game
+    ports:
+      - 5432:5432
+    depends_on:
+      - backend
+
+
+  backend:
+    ports:
+      - 8080:80
+    volumes:
+      - ./backend:/var/www/html/
+    build: .
+    working_dir: /var/www/html/
