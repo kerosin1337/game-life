@@ -36,31 +36,27 @@ class NextStepGameListener
          */
         $game = $event->game;
         $animals = $game->animals;
-//        foreach ($animals as $animal) {
-//            $this->stepDirection($animal, $game);
-////            $animal->update([
-////                'x' => random_int(0, $game->size_x),
-////                'y' => random_int(0, $game->size_y)
-////            ]);
-//        }
+        foreach ($animals as $animal) {
+            $this->stepDirection($animal, $game);
+//            $animal->update([
+//                'x' => random_int(0, $game->size_x),
+//                'y' => random_int(0, $game->size_y)
+//            ]);
+        }
         $second = [];
+        $first = [];
         for ($x = 0; $x < $game->size_x; $x++) {
             for ($y = 0; $y < $game->size_y; $y++) {
-                if ($animals->where('x', 3)->where('y', 3)->count() > 0) {
-                    $first[] = $animals->where('x', 3)->where('y', 3);
+                if ($animals->where('x', $x)->where('y', $y)->count() > 1) {
+                    $first = $animals->where('x', $x)->where('y', $y)->all();
                 }
             }
-            if (!empty($first)) {
-                $second[] = $first;
-                $first = [];
+            if ($first) {
+                array_push($second, array_values($first));
             }
+            $first = null;
         }
-        $qwe = [];
-        foreach ($second as $item) {
-            dd($item);
-           $qwe[]= array_unique($item, SORT_REGULAR);
-        }
-        throw new HttpResponseException(response()->json($qwe, 422));
+        throw new HttpResponseException(response()->json($second, 422));
     }
 
     /**

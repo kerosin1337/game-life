@@ -31,10 +31,10 @@ class Animal extends Model
         $numberOfWolves = self::whereGameId($id)->whereType('hare')->count();
         $error[] = $numberOfHares > 0 ? null : 'The number of hares is not enough for the game.';
         $error[] = $numberOfWolves > 0 ? null : 'The number of wolves is not enough for the game.';
-        $error = array_values(array_diff($error, [false]));
+        $error = array_values(array_diff($error, [null]));
         if (!empty($error)) {
             throw new HttpResponseException(response()->json([
-                'animals' => array_values(array_diff($error, []))
+                'animals' => $error
             ], 422));
         }
     }
