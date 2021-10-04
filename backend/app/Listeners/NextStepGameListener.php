@@ -66,7 +66,7 @@ class NextStepGameListener
         $game = $event->game;
         $this->animals = $game->animals;
         foreach ($this->animals as $key => $animal) {
-//            $this->stepDirection($animal, $game, $key);
+            $this->stepDirection($animal, $game, $key);
         }
         for ($x = 0; $x < $game->size_x; $x++) {
             for ($y = 0; $y < $game->size_y; $y++) {
@@ -178,9 +178,9 @@ class NextStepGameListener
             }
 
         }
-        if (!empty($this->second)) {
-            $this->eatingHares($this->second);
-        }
+//        if (!empty($this->second)) {
+//            $this->eatingHares($this->second);
+//        }
         if (empty($this->messages)) {
             $this->messages[] = 'As long as everyone is alive';
         }
