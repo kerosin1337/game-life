@@ -25,5 +25,5 @@ Route::prefix('game')->group(function () {
 Route::prefix('animal')->group(function () {
     Route::get('/', [AnimalController::class, 'index']);
     Route::post('/create', [AnimalController::class, 'create']);
-    Route::post('/create_more', [AnimalController::class, 'createMore']);
+    Route::post('/create-more', [AnimalController::class, 'createMore']);
 });

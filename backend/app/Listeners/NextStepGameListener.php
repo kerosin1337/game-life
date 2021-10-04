@@ -12,6 +12,11 @@ use Illuminate\Queue\InteractsWithQueue;
 class NextStepGameListener
 {
     /**
+     * @var array
+     */
+    public $second = [];
+
+    /**
      * Create the event listener.
      *
      * @return void
@@ -38,25 +43,52 @@ class NextStepGameListener
         $animals = $game->animals;
         foreach ($animals as $animal) {
             $this->stepDirection($animal, $game);
-//            $animal->update([
-//                'x' => random_int(0, $game->size_x),
-//                'y' => random_int(0, $game->size_y)
-//            ]);
         }
-        $second = [];
-        $first = [];
         for ($x = 0; $x < $game->size_x; $x++) {
             for ($y = 0; $y < $game->size_y; $y++) {
-                if ($animals->where('x', $x)->where('y', $y)->count() > 1) {
-                    $first = $animals->where('x', $x)->where('y', $y)->all();
+                $wolf = $animals->where('x', $x)->where('y', $y)->where('type', 'wolf')->all();
+                if ($animals->where('x', $x)->where('y', $y)->where('type', 'hare')->count() > 1 && count($wolf) > 0) {
+                    $this->pushArray('on_one_cage', $animals->where('x', $x)
+                        ->where('y', $y)
+                        ->where('type', 'hare')
+                        ->all(), $wolf);
+                }
+                if ($animals->where('x', $x + 1)->where('y', $y)->where('type', 'hare')->count() > 1 && count($wolf) > 0) {
+                    $this->pushArray('on_right_cell', $animals->where('x', $x + 1)
+                        ->where('y', $y)
+                        ->where('type', 'hare')
+                        ->all(), $wolf);
+                }
+                if ($animals->where('x', $x - 1)->where('y', $y)->where('type', 'hare')->count() > 1 && count($wolf) > 0) {
+                    $this->pushArray('on_left_cell', $animals->where('x', $x - 1)
+                        ->where('y', $y)
+                        ->where('type', 'hare')
+                        ->all(), $wolf);
+                }
+                if ($animals->where('x', $x)->where('y', $y + 1)->where('type', 'hare')->count() > 1 && count($wolf) > 0) {
+                    $this->pushArray('on_top_cell', $animals->where('x', $x)
+                        ->where('y', $y + 1)
+                        ->where('type', 'hare')
+                        ->all(), $wolf);
+                }
+                if ($animals->where('x', $x)->where('y', $y - 1)->where('type', 'hare')->count() > 1 && count($wolf) > 0) {
+                    $this->pushArray('on_bottom_cell', $animals->where('x', $x)
+                        ->where('y', $y - 1)
+                        ->where('type', 'hare')
+                        ->all(), $wolf);
                 }
             }
-            if ($first) {
-                array_push($second, array_values($first));
-            }
+//            if ($first) {
+//                array_push(this->second, $first);
+//            }
             $first = null;
         }
-        throw new HttpResponseException(response()->json($second, 422));
+        throw new HttpResponseException(response()->json($this->second, 422));
+    }
+
+    public function pushArray($shove, $queue, $wolf)
+    {
+        $this->second[$shove] = ['wolf' => array_values($wolf), 'hares' => array_values($queue)];
     }
 
     /**
@@ -91,13 +123,9 @@ class NextStepGameListener
                     $animal->y--;
                     break 2;
             }
-//            $animal->x = $direction === 0 ? ++$animal->x : $animal->x;
-//            $animal->y = $direction === 1 ? ++$animal->y : $animal->y;
-//            $animal->x = $direction === 2 ? --$animal->x : $animal->x;
-//            $animal->y = $direction === 3 ? --$animal->y : $animal->y;
-
         }
         $animal->save();
     }
+
 
 }
