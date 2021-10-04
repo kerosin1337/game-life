@@ -15,6 +15,9 @@ class NextStepGameEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    /**
+     * @var Game
+     */
     public $game;
 
     /**

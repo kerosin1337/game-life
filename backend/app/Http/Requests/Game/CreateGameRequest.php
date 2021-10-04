@@ -15,8 +15,8 @@ class CreateGameRequest extends APIRequest
     public function rules()
     {
         return [
-            'size_x' => 'required|integer|min:1|max:50',
-            'size_y' => 'required|integer|min:1|max:50',
+            'size_x' => 'required|integer|min:2|max:50',
+            'size_y' => 'required|integer|min:2|max:50',
             'steps_to_die' => 'required|integer|min:1|max:100',
         ];
     }

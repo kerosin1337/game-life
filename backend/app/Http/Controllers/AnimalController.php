@@ -48,8 +48,8 @@ class AnimalController extends Controller
         $game = Game::find($request->get('game_id'));
         for ($i = 0; $i < $request->get('numbers_of_animal'); $i++) {
             $validateData = $request->except('numbers_of_animal');
-            $validateData['x'] = random_int(0, $game->size_x);
-            $validateData['y'] = random_int(0, $game->size_y);
+            $validateData['x'] = random_int(0, $game->size_x - 1);
+            $validateData['y'] = random_int(0, $game->size_y - 1);
             $animals[] = Animal::create($validateData);
         }
         return response()->json([

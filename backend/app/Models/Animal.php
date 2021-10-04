@@ -27,8 +27,8 @@ class Animal extends Model
      */
     public static function checkAnimalsInGame($id)
     {
-        $numberOfHares = self::whereGameId($id)->whereType('wolf')->count();
-        $numberOfWolves = self::whereGameId($id)->whereType('hare')->count();
+        $numberOfHares = self::whereGameId($id)->whereType('hare')->count();
+        $numberOfWolves = self::whereGameId($id)->whereType('wolf')->count();
         $error[] = $numberOfHares > 0 ? null : 'The number of hares is not enough for the game.';
         $error[] = $numberOfWolves > 0 ? null : 'The number of wolves is not enough for the game.';
         $error = array_values(array_diff($error, [null]));
